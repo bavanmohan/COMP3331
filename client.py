@@ -9,6 +9,7 @@ import time
 #Server would be running on the same host as Client
 server_IP = sys.argv[1]
 server_port = int(sys.argv[2])
+client_port = int(sys.argv[3])
 server_name = 'localhost'
 
 
@@ -18,14 +19,15 @@ clientSocket = socket(AF_INET, SOCK_STREAM)
 clientSocket.connect((server_name, server_port))
 #Before the client can send data to the server (or vice versa) using a TCP socket, a TCP connection must first be established between the client and server. The above line initiates the TCP connection between the client and server. The parameter of the connect( ) method is the address of the server side of the connection. After this line of code is executed, the three-way handshake is performed and a TCP connection is established between the client and server.
 
+
 #while (client_on == True):
-def test():
+def test(client_port):
     logged_on = False
     while 1:
         if (logged_on ==False):
-            c_username = input('Username:')
-            c_password = input('Password:')
-            c_auth = c_username.strip() + ' '+ c_password.strip()
+            c_username = input('\n> Username:')
+            c_password = input('\n> Password:')
+            c_auth = c_username.strip() + ' '+ c_password.strip() + ' ' + str(client_port)
             message = c_auth.encode()
             #raw_input() is a built-in function in Python. When this command is executed, the user at the client is prompted with the words “Input lowercase sentence:” The user then uses the keyboard to input a line, which is put into the variable sentence. Now that we have a socket and a message, we will want to send the message through the socket to the destination host.
 
@@ -55,29 +57,39 @@ def test():
 
         #ACTIVE USER
         if (logged_on == True):
-            command = input("> Enter one of the following commands (MSG, DLT, EDT, RDM, ATU, OUT, UPD):")
-            if (command == 'OUT'):
+            command = input("> Enter one of the following commands (MSG, DLT, EDT, RDM, ATU, OUT, UPD):\n")
+            commands = command.split()
+            #print(commands)
+            if (commands[0] == 'OUT'):
                 clientSocket.sendall(command.encode())
                 data = clientSocket.recv(1024)
-                time.sleep(0.1)
+                #time.sleep(0.1)
                 print(data.decode())
                 exit()
-            elif (command == 'MSG'):
+            elif (commands[0] == 'MSG'):
                 clientSocket.sendall(command.encode())
-            elif (command == 'DLT'):
+                #clientSocket.sendall(command.encode())
+                #data = clientSocket.recv(1024)
+                #print(data.decode())
+                
+            elif (commands[0] == 'DLT'):
                 clientSocket.sendall(command.encode())
-            elif (command == 'EDT'):
+                #data = clientSocket.recv(1024)
+                #print(data.decode())
+            elif (commands[0] == 'EDT'):
                 clientSocket.sendall(command.encode())
-            elif (command == 'RDM'):
+            elif (commands[0] == 'RDM'):
                 clientSocket.sendall(command.encode())
-            elif (command == 'ATU'):
+            elif (commands[0] == 'ATU'):
                 clientSocket.sendall(command.encode())
             elif (command == 'UPD'): 
                 clientSocket.sendall(command.encode())
+            else:
+                print ('> Error, Invalid command!\n')
             
             
         
-test()
+test(client_port)
 print("CLOSED")
 clientSocket.close()
 #and close the socket
