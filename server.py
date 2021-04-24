@@ -46,6 +46,9 @@ while 1:
         if active == True: 
             print (auth_details + " matches")
             auth = "success"
+            hostname = gethostname()
+            ip_addr = gethostbyname(hostname)
+            print("YYYYYYYYYYYYYYY\n" + ip_addr)
         else:
             print (auth_details + " does not match")
             chance -= 1
@@ -58,6 +61,7 @@ while 1:
             else:
                 auth = str(chance)
         connectionSocket.send(auth.encode())
+
 
 
 connectionSocket.close()

@@ -17,37 +17,67 @@ clientSocket = socket(AF_INET, SOCK_STREAM)
 
 clientSocket.connect((server_name, server_port))
 #Before the client can send data to the server (or vice versa) using a TCP socket, a TCP connection must first be established between the client and server. The above line initiates the TCP connection between the client and server. The parameter of the connect( ) method is the address of the server side of the connection. After this line of code is executed, the three-way handshake is performed and a TCP connection is established between the client and server.
-client_on = True
+
 #while (client_on == True):
-while 1:
+def test():
+    logged_on = False
+    while 1:
+        if (logged_on ==False):
+            c_username = input('Username:')
+            c_password = input('Password:')
+            c_auth = c_username.strip() + ' '+ c_password.strip()
+            message = c_auth.encode()
+            #raw_input() is a built-in function in Python. When this command is executed, the user at the client is prompted with the words “Input lowercase sentence:” The user then uses the keyboard to input a line, which is put into the variable sentence. Now that we have a socket and a message, we will want to send the message through the socket to the destination host.
 
-    c_username = input('Input username:')
-    c_password = input('Input password:')
-    c_auth = c_username.strip() + ' '+ c_password.strip()
-    message = c_auth.encode()
-    #raw_input() is a built-in function in Python. When this command is executed, the user at the client is prompted with the words “Input lowercase sentence:” The user then uses the keyboard to input a line, which is put into the variable sentence. Now that we have a socket and a message, we will want to send the message through the socket to the destination host.
+            clientSocket.send(message)
+            #As the connection has already been established, the client program simply drops the bytes in the string sentence into the TCP connection. Note the difference between UDP sendto() and TCP send() calls. In TCP we do not need to attach the destination address to the packet, as was the case with UDP sockets.
 
-    clientSocket.send(message)
-    #As the connection has already been established, the client program simply drops the bytes in the string sentence into the TCP connection. Note the difference between UDP sendto() and TCP send() calls. In TCP we do not need to attach the destination address to the packet, as was the case with UDP sockets.
+            data = clientSocket.recv(1024)
+            #We wait to receive the reply from the server, store it in modifiedSentence
 
-    data = clientSocket.recv(1024)
-    #We wait to receive the reply from the server, store it in modifiedSentence
+            msg = data.decode()
+            reply = msg.split()
 
-    msg = data.decode()
-    reply = msg.split()
+            if (reply[0] == 'timeout'):
+                print("> You have incorrectly entered details {} times, you must now wait for 10 seconds to resume".format(reply[1]))
+                time.sleep(10)
+                print("> You may now resume")
+            elif (reply[0]=='fail'):
+                print("> Invalid Details. Please try again: " + reply[1] + " more tries")
 
-    if (reply[0] == 'timeout'):
-        print("You have incorrectly entered details {} times, you must now wait for 10 seconds to resume".format(reply[1]))
-        time.sleep(10)
-        print("You may now resume")
+            elif (reply[0] == 'success'):
+                logged_on = True
+                print ("\n> Welcome to TOOM!\n")
+            else:
+                attempts = int(reply[0])
+                print("> Invalid Details. Please try again: " + reply[0] + " more tries")
+            #print what we have received
 
-    elif (reply[0] == 'success'):
-        client_on = False
-    else:
-        attempts = int(reply[0])
-        print("Details invalid, you have " + reply[0] + " more tries")
-#print what we have received
-
+        #ACTIVE USER
+        if (logged_on == True):
+            command = input("> Enter one of the following commands (MSG, DLT, EDT, RDM, ATU, OUT, UPD):")
+            if (command == 'OUT'):
+                clientSocket.sendall(command.encode())
+                data = clientSocket.recv(1024)
+                time.sleep(0.1)
+                print(data.decode())
+                exit()
+            elif (command == 'MSG'):
+                clientSocket.sendall(command.encode())
+            elif (command == 'DLT'):
+                clientSocket.sendall(command.encode())
+            elif (command == 'EDT'):
+                clientSocket.sendall(command.encode())
+            elif (command == 'RDM'):
+                clientSocket.sendall(command.encode())
+            elif (command == 'ATU'):
+                clientSocket.sendall(command.encode())
+            elif (command == 'UPD'): 
+                clientSocket.sendall(command.encode())
+            
+            
+        
+test()
 print("CLOSED")
 clientSocket.close()
 #and close the socket

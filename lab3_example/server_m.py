@@ -4,6 +4,7 @@
 #coding: utf-8
 from socket import *
 import threading
+from _thread import *
 import time
 import datetime as dt
 
@@ -17,56 +18,48 @@ UPDATE_INTERVAL= 1
 timeout=False
 
 
-def recv_handler():
+def recv_handler(connectionSocket, address):
     global t_lock
-    global clientSocket
-    global serverSocket
+    global ser
     print('Server is ready for service')
     while(1):
-        message, clientAddress = serverSocket.recvfrom(2048)
-        #received data from the client, now we know who we are talking with
-        message = message.decode()
-        print ("received message: " + message)
-
-        
-        sentence = message.upper()
-        #get lock as we might me accessing some shared data structures
-        print (clientAddress)
         with t_lock:
+            sentence = connectionSocket.recv(1024)
+            #wait for data to arrive from the client
+
+            capitalizedSentence = sentence.upper()
+            #change the case of the message received from client
+            print("received: \t" + sentence.decode())
+            
+            #with t_lock:
             #send message to the client
-            serverSocket.sendto(sentence.encode(), clientAddress)
+            connectionSocket.send(capitalizedSentence)
             #notify the thread waiting
             t_lock.notify()
+    connectionSocket.close()
 
-
-def send_handler():
-    global t_lock
-    global clientSocket
-    global serverSocket
-    global timeout
-    #go through the list of the subscribed clients and send them the current time after every 1 second
-    while(1):
-        #get lock
-        with t_lock:
-            # clientSocket.sendto(message.encode(), ADDRESS)
-            #notify other thread
-            t_lock.notify()
-        #sleep for UPDATE_INTERVAL
-        time.sleep(UPDATE_INTERVAL)
+def process_handler():
+    while (1):
+        connectionSocket, addr = serverSocket.accept()
+        recv_thread=threading.Thread(name='please', target=recv_handler(connectionSocket, addr))
+        recv_thread.daemon=True
+        recv_thread.start()
 
 #we will use two sockets, one for sending and one for receiving
-clientSocket = socket(AF_INET, SOCK_DGRAM)
-serverSocket = socket(AF_INET, SOCK_DGRAM)
-serverSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1) 
+serverSocket = socket(AF_INET, SOCK_STREAM)
 serverSocket.bind(('localhost', serverPort))
+serverSocket.listen()
 
-recv_thread=threading.Thread(name="RecvHandler", target=recv_handler)
+#process = recv_handler(connectionSocket, addr)
+
+recv_thread=threading.Thread(name='please', target=process_handler)
 recv_thread.daemon=True
 recv_thread.start()
 
 #send_thread=threading.Thread(name="SendHandler",target=send_handler)
 #send_thread.daemon=True
 #send_thread.start()
+
 #this is the main thread
 while True:
     time.sleep(0.1)

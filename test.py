@@ -9,9 +9,36 @@
 #         print(details)
 #         if (details.strip() == message):
 #             break
+from datetime import datetime 
+import time
 
-message = "split a"
-message2 = "asdsa"
 
-name = message2.split()
-print(name[0])
+global clients_list
+clients_list = []
+def add (username, ip_addr):
+    global clients_list
+    now=datetime.now()
+    clients_list.append ({
+        'date': now.strftime("%d/%m/%Y %H:%M:%S"),
+        'username' : username,
+        'ip': ip_addr,
+        'udp':'na',
+    })
+
+def write_file (clients_list):
+    i = 0
+    f = open('userlog.txt', 'w')
+    f.close()
+    f = open('userlog.txt', 'a')
+    for client in clients_list:
+        f.write(str(i)+' '+str(client['date'])+' '+client['username']+' \n')
+        i+=1
+    f.close()
+
+
+
+add('yoda',12312)
+#time.sleep(10)
+add('as',11111)
+write_file(clients_list)
+print(clients_list)
