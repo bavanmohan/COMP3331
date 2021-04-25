@@ -1,40 +1,4 @@
-""" from socket import *
-import threading 
 
-# Multithreaded Python server : TCP Server Socket Thread Pool
-
-
-# Multithreaded Python server : TCP Server Socket Program Stub
-def processing (connectionSocket, addr):
-    while 1:
-        sentence = connectionSocket.recv(1024)
-        #wait for data to arrive from the client
-
-        capitalizedSentence = sentence.upper()
-        #change the case of the message received from client
-        print("received: \t" + sentence.decode())
-        connectionSocket.send(capitalizedSentence)
-        #and send it back to client
-
-    connectionSocket.close()
-
-serverSocket = socket(AF_INET, SOCK_STREAM) 
-serverSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1) 
-serverSocket.bind(('localhost', 12000)) 
-threads = []
-while True: 
-    serverSocket.listen() 
-    print ("The server is ready to receive\n") 
-    (connectionSocket, addr) = serverSocket.accept() 
-    process = processing(connectionSocket, addr)
-    threading._start_new_thread(processing, (connectionSocket, addr))
-    #new_thread=threading.Thread(name="RecvHandler", target=process)
-    #new_thread.daemon=True
-    threads.append(new_thread)
-    print(threads[0])
-    print('HHHHHHHHHH')
-    new_thread.start() 
-    """
 from socket import *
 import os
 from _thread import *
@@ -107,6 +71,7 @@ def read_userlist(clients_list, username):
     return new_userlist
 
 def threaded_client(connectionSocket, address, no_attempts):
+    
     
     active = False
     chance = no_attempts
@@ -208,12 +173,11 @@ def threaded_client(connectionSocket, address, no_attempts):
                     'edited': 'no',
                 })
                 write_message(message_list)
-                data ='> Message #'+ str(i) +' posted at '+ str(now.strftime("%d/%m/%Y %H:%M:%S"))
-                print(data)
-                mssge = '> ' + username + ' posted MSG #' + str(i) + ' "' + msg +'" at' + ' ' + str(timestamp) + '.'
-                #SEND TO CLIENT
-                print(mssge)
-                #connectionSocket.sendall(data.encode())
+                client_msg ='  > Message #'+ str(i) +' posted at '+ str(now.strftime("%d/%m/%Y %H:%M:%S"))
+                connectionSocket.send(client_msg.encode())
+                server_msg = '  > ' + username + ' posted MSG #' + str(i) + ' "' + msg +'" at' + ' ' + str(timestamp) + '.'
+                print(server_msg)
+
             elif (command[0] == 'DLT'):
                 delete = False
                 #print(command[1],'\t',command[2])
@@ -235,14 +199,14 @@ def threaded_client(connectionSocket, address, no_attempts):
                         server_msg = '> ' + username + ' deleted MSG #' + msg_number + ' "' + message['message'] + '" at ' + timestamp + '.' 
                         print(server_msg)
                         #SEND TO CLIENT
-                        msg = "> Message #" + str(msg_number)+ ' deleted at ' + timestamp + '.'
-                        print(msg)
+                        client_msg = "  > Message #" + str(msg_number)+ ' deleted at ' + timestamp + '.'
+                        print(client_msg)
                         message_list.remove(message)
                         write_message(message_list)
 
                 if delete == False:
                     #SEND TO CLIENT
-                    print('> Please select a message created by you:\n')
+                    print('  > Please select a message created by you:\n')
                     
             elif (command[0] == 'EDT'):
                 #print('HH', command)
@@ -276,7 +240,8 @@ def threaded_client(connectionSocket, address, no_attempts):
                             print(server_msg)
                             # SEND TO CLIENT
                             client_msg = '> Message #' + str(msg_number) + ' edited at ' + timestamp + '.'
-                            print(client_msg)
+                            #print(client_msg)
+                            connectionSocket.send(client_msg.encode())
 
                 
                 if edited == False:
@@ -290,20 +255,23 @@ def threaded_client(connectionSocket, address, no_attempts):
                 read_list = read_messages(message_list, timestamp)
                 server_msg = '> ' + username + ' issued RDM command.\n> Return messages:'
                 print(server_msg)
+                client_msg = ''
                 for msg in read_list:
                     #print (msg)
                     if msg['edited'] == 'yes':
                         server_msg = '#' + str(msg['number']) + ' ' + msg['username'] + ', ' + msg['message'] + ', edited at ' + str(timestamp) + '.'
                         print(server_msg)
                         #SEND TO CLIENT
-                        client_msg = '> #' + str(msg['number']) + ', ' + msg['username']+ ': ' + msg['message'] + ', edited at ' + str(timestamp) + '.'
-                        print(client_msg)
+                        msg = '\n  > #' + str(msg['number']) + ', ' + msg['username']+ ': ' + msg['message'] + ', edited at ' + str(timestamp) + '.'
+                        client_msg = client_msg + ' ' + msg
                     elif msg['edited'] == 'no':
                         server_msg = '#' + str(msg['number']) + ' ' + msg['username'] + ', ' + msg['message'] + ', posted at ' + str(timestamp) + '.'
                         print(server_msg)
                         #SEND TO CLIENT
-                        client_msg = '> #' + str(msg['number']) + ', ' + msg['username'] + ': ' + msg['message'] + ', posted at ' + str(timestamp) + '.'
-                        print(client_msg)
+                        msg = '\n  > #' + str(msg['number']) + ', ' + msg['username'] + ': ' + msg['message'] + ', posted at ' + str(timestamp) + '.'
+                        client_msg = client_msg + ' ' + msg
+                #print(client_msg)
+                connectionSocket.send(client_msg.encode())
                 
 
             elif (command[0] == 'ATU'):
@@ -314,25 +282,27 @@ def threaded_client(connectionSocket, address, no_attempts):
                 if (activeuser_list) == []:
                     server_msg = '> No other active user'
                     print(server_msg)
-                    #SEND TO CLIENT
-                    client_msg = '> No other active user'
-                    print(client_msg)
-                for user in activeuser_list:
-                    i = 1
-                    server_msg = user['username'] + ', '+ user['ip'] + ', '+ user['udp'] + ', active since ' + str(user['date']) + '.'
-                    print(server_msg)
-                    client_msg = user['username'] + '; '+ user['ip'] + '; '+ user['udp'] + '; active since ' + str(user['date']) + '.'                    
-                    print(client_msg)
-                    i =+ 1
-                #continue
+                    client_msg = '  > No other active user'
+                    connectionSocket.send(client_msg.encode())
+                else:
+                    client_msg =  ''
+                    for user in activeuser_list:
+                        i = 1
+                        server_msg = user['username'] + ', '+ user['ip'] + ', '+ user['udp'] + ', active since ' + str(user['date']) + '.'
+                        print(server_msg)
+                        msg = '\n  >' + user['username'] + '; '+ user['ip'] + '; '+ user['udp'] + '; active since ' + str(user['date']) + '.'                    
+                        client_msg = client_msg + ' ' + msg
+                        i =+ 1
+                    connectionSocket.send(client_msg.encode())
+
 
     connectionSocket.close()
 
 #MAIN
 while True:
     Client, address = serverSocket.accept()
-    print('Connected to: ' + address[0] + ':' + str(address[1]))
+    #print('Connected to: ' + address[0] + ':' + str(address[1]))
     start_new_thread(threaded_client, (Client, address, no_attempts))
     ThreadCount += 1
-    print('Thread Number: ' + str(ThreadCount))
+    #print('Thread Number: ' + str(ThreadCount))
 serverSocket.close()

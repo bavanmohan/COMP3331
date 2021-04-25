@@ -49,7 +49,7 @@ def test(client_port):
 
             elif (reply[0] == 'success'):
                 logged_on = True
-                print ("\n> Welcome to TOOM!\n")
+                print ("\n> Welcome to TOOM!")
             else:
                 attempts = int(reply[0])
                 print("> Invalid Details. Please try again: " + reply[0] + " more tries")
@@ -57,7 +57,7 @@ def test(client_port):
 
         #ACTIVE USER
         if (logged_on == True):
-            command = input("> Enter one of the following commands (MSG, DLT, EDT, RDM, ATU, OUT, UPD):\n")
+            command = input("\n> Enter one of the following commands (MSG, DLT, EDT, RDM, ATU, OUT, UPD):\n")
             if not command:
                 continue
             commands = command.split()
@@ -69,26 +69,32 @@ def test(client_port):
                 print(data.decode())
                 exit()
             elif (commands[0] == 'MSG'):
-                clientSocket.sendall(command.encode())
+                clientSocket.send(command.encode())
                 #clientSocket.sendall(command.encode())
-                #data = clientSocket.recv(1024)
-                #print(data.decode())
+                data = clientSocket.recv(1024)
+                print(data.decode())
                 
             elif (commands[0] == 'DLT'):
-                clientSocket.sendall(command.encode())
-                #data = clientSocket.recv(1024)
-                #print(data.decode())
+                clientSocket.send(command.encode())
+                data = clientSocket.recv(1024)
+                print(data.decode())
             elif (commands[0] == 'EDT'):
-                clientSocket.sendall(command.encode())
+                clientSocket.send(command.encode())
+                data = clientSocket.recv(1024)
+                print(data.decode())
             elif (commands[0] == 'RDM'):
-                clientSocket.sendall(command.encode())
+                clientSocket.send(command.encode())
+                data = clientSocket.recv(1024)
+                print(data.decode())
             elif (commands[0] == 'ATU'):
-                clientSocket.sendall(command.encode())
+                clientSocket.send(command.encode())
+                data = clientSocket.recv(1024)
+                print(data.decode())
             elif (command == 'UPD'): 
-                clientSocket.sendall(command.encode())
+                clientSocket.send(command.encode())
             else:
-                print ('> Error, Invalid command!\n')
-            continue
+                print ('> Error, Invalid command!')
+            
             
         
 test(client_port)
