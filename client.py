@@ -58,6 +58,8 @@ def test(client_port):
         #ACTIVE USER
         if (logged_on == True):
             command = input("> Enter one of the following commands (MSG, DLT, EDT, RDM, ATU, OUT, UPD):\n")
+            if not command:
+                continue
             commands = command.split()
             #print(commands)
             if (commands[0] == 'OUT'):
@@ -86,7 +88,7 @@ def test(client_port):
                 clientSocket.sendall(command.encode())
             else:
                 print ('> Error, Invalid command!\n')
-            
+            continue
             
         
 test(client_port)
