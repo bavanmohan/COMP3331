@@ -4,7 +4,8 @@
 #coding: utf-8
 from socket import *
 import threading
-from _thread import *
+
+import datetime as dt
 
 #Server will run on this port
 serverPort = 12000

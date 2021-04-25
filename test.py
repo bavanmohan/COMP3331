@@ -11,7 +11,21 @@
 #             break
 from datetime import datetime 
 import time
+import sys
 
+try:
+    no_attempts = int(sys.argv[1])
+except:
+    print("Invalid number of allowed failed consecutive attempt: " + sys.argv[2] + \
+        " - The valid value of argument number is an integer between 1 and 5")
+    exit()
+
+if not isinstance(no_attempts, int) or not no_attempts > 0 or not no_attempts < 6:
+    print('k')
+
+
+
+print('HHHH')
 
 global clients_list
 clients_list = []
@@ -35,10 +49,3 @@ def write_file (clients_list):
         i+=1
     f.close()
 
-
-
-add('yoda',12312)
-#time.sleep(10)
-add('as',11111)
-write_file(clients_list)
-print(clients_list)

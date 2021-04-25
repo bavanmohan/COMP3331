@@ -4,7 +4,6 @@
 #coding: utf-8
 from socket import *
 import threading
-from _thread import *
 import time
 import datetime as dt
 
@@ -18,48 +17,31 @@ UPDATE_INTERVAL= 1
 timeout=False
 
 
-def recv_handler(connectionSocket, address):
-    global t_lock
-    global ser
+def recv_handler(serverSocket):
     print('Server is ready for service')
     while(1):
+        
+        message = serverSocket.recv(2048)
+        #received data from the client, now we know who we are talking with
+        message = message.decode()
+        #get lock as we might me accessing some shared data structures
         with t_lock:
-            sentence = connectionSocket.recv(1024)
-            #wait for data to arrive from the client
-
-            capitalizedSentence = sentence.upper()
-            #change the case of the message received from client
-            print("received: \t" + sentence.decode())
-            
-            #with t_lock:
+            serverMessage = message.isupper()
             #send message to the client
-            connectionSocket.send(capitalizedSentence)
+            serverSocket.send(serverMessage.encode())
             #notify the thread waiting
             t_lock.notify()
-    connectionSocket.close()
-
-def process_handler():
-    while (1):
-        connectionSocket, addr = serverSocket.accept()
-        recv_thread=threading.Thread(name='please', target=recv_handler(connectionSocket, addr))
-        recv_thread.daemon=True
-        recv_thread.start()
 
 #we will use two sockets, one for sending and one for receiving
+
 serverSocket = socket(AF_INET, SOCK_STREAM)
 serverSocket.bind(('localhost', serverPort))
 serverSocket.listen()
+print("listening for connections")
 
-#process = recv_handler(connectionSocket, addr)
-
-recv_thread=threading.Thread(name='please', target=process_handler)
-recv_thread.daemon=True
-recv_thread.start()
-
-#send_thread=threading.Thread(name="SendHandler",target=send_handler)
-#send_thread.daemon=True
-#send_thread.start()
-
-#this is the main thread
 while True:
-    time.sleep(0.1)
+    client, address = serverSocket.accept()
+    print ("connected on ", client, address)
+    recv_thread=threading.Thread(name="RecvHandler", target=recv_handler(serverSocket))
+    recv_thread.daemon=True
+    recv_thread.start()

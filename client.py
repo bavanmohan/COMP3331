@@ -1,79 +1,68 @@
-#coding: utf-8
 from socket import *
 from threading import *
 import sys
 import time
 
-#Define connection (socket) parameters
-#Address + Port no
-#Server would be running on the same host as Client
-server_IP = sys.argv[1]
-server_port = int(sys.argv[2])
-client_port = int(sys.argv[3])
-server_name = 'localhost'
+#       DISCLAIMER      # 
+# I referenced the TCPClient.py program provided underneath the COMP3331 LAB03 resources. https://webcms3.cse.unsw.edu.au/COMP3331/21T1/resources/58257
+# The above program was used as a basic skeleton for this file.
 
-
-clientSocket = socket(AF_INET, SOCK_STREAM)
-#This line creates the client’s socket. The first parameter indicates the address family; in particular,AF_INET indicates that the underlying network is using IPv4. The second parameter indicates that the socket is of type SOCK_STREAM,which means it is a TCP socket (rather than a UDP socket, where we use SOCK_DGRAM). 
-
-clientSocket.connect((server_name, server_port))
-#Before the client can send data to the server (or vice versa) using a TCP socket, a TCP connection must first be established between the client and server. The above line initiates the TCP connection between the client and server. The parameter of the connect( ) method is the address of the server side of the connection. After this line of code is executed, the three-way handshake is performed and a TCP connection is established between the client and server.
-
-
-#while (client_on == True):
-def test(client_port):
+# This serves as the primary client-side function. It's purpose is to interact with clients 
+# through the command line interface and then relaying the relevant command/data to the 
+# server through simple request/response interactions.
+def processes(client_port):
     logged_on = False
+    # This while loop will continue until the user logs out, it is split into 2 if statements:
+    # If the user is logged on or if the user is yet to log on
     while 1:
+        # If the user is not yet logged on, they must undergo the authenticatio process in this if statement
         if (logged_on ==False):
             c_username = input('\n> Username:')
             c_password = input('\n> Password:')
+            # The username and password are converted into a string to be split again once they reach the server
+            # I included client_port in this message as it was the easiest method to inform the server of the clients port
             c_auth = c_username.strip() + ' '+ c_password.strip() + ' ' + str(client_port)
-            message = c_auth.encode()
-            #raw_input() is a built-in function in Python. When this command is executed, the user at the client is prompted with the words “Input lowercase sentence:” The user then uses the keyboard to input a line, which is put into the variable sentence. Now that we have a socket and a message, we will want to send the message through the socket to the destination host.
-
-            clientSocket.send(message)
-            #As the connection has already been established, the client program simply drops the bytes in the string sentence into the TCP connection. Note the difference between UDP sendto() and TCP send() calls. In TCP we do not need to attach the destination address to the packet, as was the case with UDP sockets.
-
+            
+            # The send and recv functions below demonstrate the request/response interactions between client and server
+            clientSocket.send(c_auth.encode())
             data = clientSocket.recv(1024)
-            #We wait to receive the reply from the server, store it in modifiedSentence
-
+            
+            # For this authentication section, the server will reply with whether success if the user was authenticated
+            # or timeout + number of failed attempts if the user is blocked
+            # and fail + number of  attempts remaining before the user is blocked
             msg = data.decode()
             reply = msg.split()
-
+            # This first if statement is where the blocking feature occurs, after the server informs the client that they have
+            # reached the threshold of incorrect inputs, time.sleep(10) is used to pause the execution of this block for 10 seconds
             if (reply[0] == 'timeout'):
                 print("> You have incorrectly entered details {} times, you must now wait for 10 seconds to resume".format(reply[1]))
                 time.sleep(10)
-                print("> You may now resume")
+                print("\n> You may now resume")
+            # In the event that a login fails, the server will send an additionaly string in the reply column relaying how many
+            # attempts the user has remaining
             elif (reply[0]=='fail'):
-                print("> Invalid Details. Please try again: " + reply[1] + " more tries")
-
-            elif (reply[0] == 'success'):
+                print("\n> Invalid Details. Please try again: " + reply[1] + " attempt(s) left")
+            else:
                 logged_on = True
                 print ("\n> Welcome to TOOM!")
-            else:
-                attempts = int(reply[0])
-                print("> Invalid Details. Please try again: " + reply[0] + " more tries")
-            #print what we have received
 
-        #ACTIVE USER
+        #if the user is logged in, this series of if statements will determine the command entered as well as any additional data
         if (logged_on == True):
             command = input("\n> Enter one of the following commands (MSG, DLT, EDT, RDM, ATU, OUT, UPD):\n")
             if not command:
                 continue
             commands = command.split()
-            #print(commands)
+            #The logout function below is different to the other functions of this series as it exits the program to then 
+            # disconnect from the server
             if (commands[0] == 'OUT'):
                 clientSocket.sendall(command.encode())
                 data = clientSocket.recv(1024)
-                #time.sleep(0.1)
                 print(data.decode())
                 exit()
             elif (commands[0] == 'MSG'):
                 clientSocket.send(command.encode())
-                #clientSocket.sendall(command.encode())
                 data = clientSocket.recv(1024)
-                print(data.decode())
-                
+                print(data.decode())             
             elif (commands[0] == 'DLT'):
                 clientSocket.send(command.encode())
                 data = clientSocket.recv(1024)
@@ -94,10 +83,19 @@ def test(client_port):
                 clientSocket.send(command.encode())
             else:
                 print ('> Error, Invalid command!')
-            
-            
-        
-test(client_port)
-print("CLOSED")
+
+
+
+server_IP = sys.argv[1]
+server_port = int(sys.argv[2])
+client_port = int(sys.argv[3])
+server_name = 'localhost'
+
+
+clientSocket = socket(AF_INET, SOCK_STREAM)
+clientSocket.connect((server_name, server_port))
+
+# This line below calls the main function on this page above
+processes(client_port)
+
 clientSocket.close()
-#and close the socket

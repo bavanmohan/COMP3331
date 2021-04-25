@@ -5,16 +5,17 @@ from socket import *
 import sys
 
 #Server would be running on the same host as Client
-serverName = sys.argv[1]
-serverPort = int(sys.argv[2])
+serverName = 'localhost'
+serverPort = 12000
 
-clientSocket = socket(AF_INET, SOCK_DGRAM)
+clientSocket = socket(AF_INET, SOCK_STREAM)
+clientSocket.connect((serverName, serverPort))
 while 1:
     message = input("Please type sentence\n")
 
-    clientSocket.sendto(message.encode(),(serverName, serverPort))
+    clientSocket.send(message.encode())
     #wait for the reply from the server
-    receivedMessage, serverAddress = clientSocket.recvfrom(2048)
+    receivedMessage = clientSocket.recvfrom(2048)
 
     #print (receivedMessage.decode())
     print(receivedMessage.decode())
