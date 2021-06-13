@@ -87,9 +87,9 @@ On entering invalid credentials, the user is prompted to retry. After a number o
 attempts, the user is blocked for a duration of 10 seconds (number is an integer command line
 argument supplied to the server and the valid value of number should be between 1 and 5) and cannot
 login during this 10 second duration (even from another IP address). If an invalid number value (e.g.,
-a floating-point value, 0 or 6) is supplied to the server, the server prints out a message such as “Invalid
-number of allowed failed consecutive attempt: number. The valid value of argument number is an
-integer between 1 and 5”.
+a floating-point value, 0 or 6) is supplied to the server, the server prints out a message such as 
+`“Invalid number of allowed failed consecutive attempt: number. The valid value of argument number is an
+integer between 1 and 5”.`
 For non-CSE Students: After a user logs in successfully, the server should record a timestamp of
 the user logging in event and the username in the active user log file (userlog.txt, you should make
 sure that write permissions are enabled for userlog.txt). Active users are numbered starting at 1:
@@ -99,17 +99,17 @@ For CSE Students: After a user logs in successfully, the client should next send
 that it is listening to the server. The server should record a timestamp of the user logging in event, the
 username, the IP address (how?) and port number that the client listens to in the active user log file
 (userlog.txt):
-Active user sequence number; timestamp; username; client IP address;
-client UDP server port number
-1; 19 Feb 2021 21:30:04; yoda; 129.64.1.11; 6666
+`Active user sequence number; timestamp; username; client IP address;`
+`client UDP server port number`
+`1; 19 Feb 2021 21:30:04; yoda; 129.64.1.11; 6666`
 For simplicity, a user will log in once in any given time, e.g., multiple logins concurrently are not
 allowed, and we won’t test this case.
 
 ## 2.3. Text message operation
 Following successful login, the client displays a message to the user informing them of all available
 commands and prompting to select one command. The following commands are available: MSG:
-Post Message, DLT: Delete Message, EDT: Edit Message, RDM: Read Message, ATU: Display
-active users, OUT: Log out and UPD: Upload file (for CSE Students only). All available commands
+Post Message, `DLT: Delete Message`, `EDT: Edit Message`, `RDM: Read Message`, `ATU: Display
+active users`, `OUT: Log out` and `UPD: Upload file` (for CSE Students only). All available commands
 should be shown to the user in the first instance after successful login. Subsequent prompts for actions
 should include this same message.
 If an invalid command is selected, an error message should be shown to the user and they should be
