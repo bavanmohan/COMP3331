@@ -7,7 +7,7 @@ python client.py 127.0.0.1 12000 6000
 # COMP3331/9331 Computer Networks and Applications
 # Assignment for Term 1, 2021
 
-1. Goal and learning objectives
+## 1. Goal and learning objectives
 Zoom and Microsoft Team are widely used as a means for large groups of people to hold virtual
 meetings. A good example is the on-line Zoom lectures used for this course. In this assignment, you
 will have the opportunity to implement your own version of an online videoconferencing and
@@ -93,8 +93,8 @@ integer between 1 and 5”.
 For non-CSE Students: After a user logs in successfully, the server should record a timestamp of
 the user logging in event and the username in the active user log file (userlog.txt, you should make
 sure that write permissions are enabled for userlog.txt). Active users are numbered starting at 1:
-Active user sequence number; timestamp; username
-1; 19 Feb 2021 21:30:04; yoda
+`Active user sequence number; timestamp; username`
+`1; 19 Feb 2021 21:30:04; yoda`
 For CSE Students: After a user logs in successfully, the client should next send the UDP port number
 that it is listening to the server. The server should record a timestamp of the user logging in event, the
 username, the IP address (how?) and port number that the client listens to in the active user log file
@@ -130,7 +130,7 @@ There are 6 commands for Non-CSE Students and 7 commands for CSE Students respec
 which users can execute. The execution of each individual command is described below.
 
 ### MSG: Post Message
-MSG message
+`MSG message`
 The message body should be included as the argument. Note that, the message may contain white
 spaces (e.g., “hello how are you”). The client should send the command (MSG), the message and the
 username to the server. In our tests, we will only use short messages (a few words long). The server
