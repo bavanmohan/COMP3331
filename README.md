@@ -4,8 +4,8 @@ python server.py 12000 3
 python client.py server_IP server_port client_udp_server_port
 python client.py 127.0.0.1 12000 6000
 
-#COMP3331/9331 Computer Networks and Applications
-#Assignment for Term 1, 2021
+# COMP3331/9331 Computer Networks and Applications
+# Assignment for Term 1, 2021
 
 1. Goal and learning objectives
 Zoom and Microsoft Team are widely used as a means for large groups of people to hold virtual
@@ -20,13 +20,13 @@ videoconferencing including authentication, posting text message to all particip
 participant, uploading video streams (i.e., files in this assignment). You will be designing custom
 application protocols based on TCP and UDP.
 
-##1.1 Learning Objectives
+## 1.1 Learning Objectives
 On completing this assignment, you will gain sufficient expertise in the following skills:
 1. Detailed understanding of how client-server and client-client interactions work.
 2. Expertise in socket programming.
 3. Insights into implementing an application layer protocol.
 
-##2. Assignment Specification
+## 2. Assignment Specification
 The base specification of the assignment is worth 20 marks. The specification is structured in two
 parts. The first part covers the basic interactions between the clients and server and includes
 functionality for clients to communicate with the server. The second part asks you implement
@@ -53,7 +53,7 @@ cs3331@cse.unsw.edu.au to seek approval before 5pm, 18 March (Friday, Week 5). W
 assume by default that all students are attempting the CSE version of the assignment unless they have
 sought explicit permission. No exceptions.
 
-##2.1. Assignment Specification
+## 2.1. Assignment Specification
 In this programming assignment, you will implement the client and server programs of a video
 conference application, similar in many ways to the Zoom application that we use for this course.
 The difference being that your application won’t capture and display live videos; instead, it will
@@ -72,7 +72,7 @@ client and server or two clients (CSE Students only). The user may execute a ser
 at the command prompt that capture the specific interactions taking place. You are free to choose the
 precise text that is displayed. Examples of client server interactions are given in Section 8.
 
-##2.2 Authentication
+## 2.2 Authentication
 When a client requests for a connection to the server, e.g., for attending a video conference, the server
 should prompt the user to input the username and password and authenticate the user. The valid
 username and password combinations will be stored in a file called credentials.txt which will be in
@@ -105,7 +105,7 @@ client UDP server port number
 For simplicity, a user will log in once in any given time, e.g., multiple logins concurrently are not
 allowed, and we won’t test this case.
 
-##2.3. Text message operation
+## 2.3. Text message operation
 Following successful login, the client displays a message to the user informing them of all available
 commands and prompting to select one command. The following commands are available: MSG:
 Post Message, DLT: Delete Message, EDT: Edit Message, RDM: Read Message, ATU: Display
@@ -129,7 +129,7 @@ sample interactions between the client and server.
 There are 6 commands for Non-CSE Students and 7 commands for CSE Students respectively,
 which users can execute. The execution of each individual command is described below.
 
-###MSG: Post Message
+### MSG: Post Message
 MSG message
 The message body should be included as the argument. Note that, the message may contain white
 spaces (e.g., “hello how are you”). The client should send the command (MSG), the message and the
@@ -143,7 +143,8 @@ After the message is successfully received at a server, a confirmation message w
 and timestamp should be sent from the server to the client and displayed to the user. If there is no
 argument after the MSG command. The client should display an error message before prompting the
 user to select one of the available commands.
-###DLT: Delete Message
+
+### DLT: Delete Message
 DLT messagenumber timestamp
 The message number to be deleted and the message’s timestamp should be included as arguments. A
 message can only be deleted by the user who originally posted that message. The client sends the
@@ -156,7 +157,8 @@ the message log file (all subsequent messages in the file should be moved up by 
 message numbers should be updated appropriately) and a confirmation should be sent to the client
 and displayed at the prompt to the user. The client should next prompt the user to select one of the
 available commands.
-###EDT: Edit Message
+
+### EDT: Edit Message
 EDT messagenumber timestamp message
 The message number to be edited, the message’s timestamp and the new message should be included
 as arguments. A message can only be edited by the user who originally posted that message. The
@@ -172,7 +174,8 @@ Messagenumber; timestamp; username; message; edited
 1; 19 Feb 2021 21:39:10; yoda; do or do not; yes
 A confirmation should be sent to the client and displayed at the prompt to the user. The client should
 next prompt the user to select one of the commands.
-###RDM: Read Messages
+
+### RDM: Read Messages
 RDM timestamp
 The timestamp, after which the messages to be read, should be included as an argument. The client
 should send the command (RDM) and a timestamp to the server. The server should check if there are
@@ -182,7 +185,8 @@ messages to the client. The client should display all received messages at the t
 there is no new message exist, a notification message of “no new message” should be sent to the
 client and displayed at the prompt to the user. The client should next prompt the user to select one of
 the available commands.
-###ATU: Download Active Users
+
+### ATU: Download Active Users
 ATU
 There should be no arguments for this command. The server should check if there are any other active
 users apart from the client that sends the ATU command. If so, the server should send the usernames,
@@ -192,7 +196,8 @@ ATU command to the server.). The client should display all the information of al
 the terminal to the user. If there is no other active user exist, a notification message of “no other active
 user” should be sent to the client and displayed at the prompt to the user. The client should next
 prompt the user to select one of the available commands.
-###OUT: Log out
+
+### OUT: Log out
 OUT
 There should be no arguments for this command. The client should close the TCP connection, (UDP
 client server, CSE Students only) and exit with a goodbye message displayed at the terminal to the
@@ -210,7 +215,8 @@ Audience client. Here, the presenter client is the UDP client, while the Audienc
 server. After receiving the video files, the Audience client saves the files and the username of
 Presenter. Note that a client can behave in either Presenter or Audience state.
 To implement this functionality your client should support the following command.
-###UPD: Upload file
+
+### UPD: Upload file
 UPD username filename
 The Audience user and the name of the file should be included as arguments. You may assume that
 the file included in the argument will be available in the current working directory of the client with
@@ -233,7 +239,8 @@ clients on the same machine on separate terminals. In this case, use 127.0.0.1 (
 destination (e.g., Obi-wan’s in our example above) IP address. 2) For simplicity, we will run different
 clients at different directories, and won’t test the scenario that a file is received when a user is
 typing/issuing a command.
-##3.5 File Names & Execution
+
+## 3.5 File Names & Execution
 The main code for the server and client should be contained in the following files: server.c, or
 Server.java or server.py, and client.c or Client.java or client.py. You are free
 to create additional files such as header files or other class files and name them as you wish.
@@ -280,8 +287,9 @@ Audience) acts as UDP server and the other client program (i.e., Presenter) acts
 When you are testing your assignment, you can run the server and multiple clients on the same 
 8
 machine on separate terminals. In this case, use 127.0.0.1 (local host) as the server IP address.
-##3.6 Program Design Considerations
-###Client Design
+
+## 3.6 Program Design Considerations
+### Client Design
 The client program should be fairly straightforward. The client needs to interact with the user through
 the command line interface and print meaningful messages. Section 8 provides some examples. You
 do not have the use the exact same text as shown in the samples. Upon initiation, the client should
@@ -297,7 +305,8 @@ client UDP server should be implemented with another thread. However, this threa
 until the client logs off since it is a UDP server thread. You should be particularly careful about how
 multiple threads will interact with the various data structures. Code snippets for multi-threading in
 all supported languages are available on the course webpage.
-###Server Design
+
+### Server Design
 When the server starts up, the videoconference is empty – i.e., there exist no users. The server should
 wait for a client to connect, perform authentication and service each command issued by the client
 sequentially. Note that, you will need to define a number of data structures for managing the current
