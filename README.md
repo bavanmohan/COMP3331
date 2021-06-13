@@ -97,6 +97,7 @@ the user logging in event and the username in the active user log file (userlog.
 sure that write permissions are enabled for userlog.txt). Active users are numbered starting at 1:
 
 `Active user sequence number; timestamp; username`
+
 `1; 19 Feb 2021 21:30:04; yoda`
 
 For CSE Students: After a user logs in successfully, the client should next send the UDP port number
@@ -104,8 +105,7 @@ that it is listening to the server. The server should record a timestamp of the 
 username, the IP address (how?) and port number that the client listens to in the active user log file
 (userlog.txt):
 
-`Active user sequence number; timestamp; username; client IP address;`
-`client UDP server port number`
+`Active user sequence number; timestamp; username; client IP address;client UDP server port number`
 
 `1; 19 Feb 2021 21:30:04; yoda; 129.64.1.11; 6666`
 
@@ -138,6 +138,7 @@ which users can execute. The execution of each individual command is described b
 
 ### MSG: Post Message
 `MSG message`
+
 The message body should be included as the argument. Note that, the message may contain white
 spaces (e.g., “hello how are you”). The client should send the command (MSG), the message and the
 username to the server. In our tests, we will only use short messages (a few words long). The server
@@ -152,7 +153,8 @@ argument after the MSG command. The client should display an error message befor
 user to select one of the available commands.
 
 ### DLT: Delete Message
-DLT messagenumber timestamp
+`DLT messagenumber timestamp`
+
 The message number to be deleted and the message’s timestamp should be included as arguments. A
 message can only be deleted by the user who originally posted that message. The client sends the
 command (DLT), the message number, its timestamp and the username to the server. The server
@@ -166,7 +168,8 @@ and displayed at the prompt to the user. The client should next prompt the user 
 available commands.
 
 ### EDT: Edit Message
-EDT messagenumber timestamp message
+`EDT messagenumber timestamp message`
+
 The message number to be edited, the message’s timestamp and the new message should be included
 as arguments. A message can only be edited by the user who originally posted that message. The
 client should send the command (EDT), the message number, the original message’s timestamp, the
@@ -177,13 +180,17 @@ be sent to the client and displayed at the prompt to the user. If all checks pas
 replace the original message with the new message, update the timestamp, and marked the message
 as edited in the message log file (the rest of the details associated with this message, i.e., message
 number and username should remain unchanged).
-Messagenumber; timestamp; username; message; edited
-1; 19 Feb 2021 21:39:10; yoda; do or do not; yes
+
+`Messagenumber; timestamp; username; message; edited`
+
+`1; 19 Feb 2021 21:39:10; yoda; do or do not; yes`
+
 A confirmation should be sent to the client and displayed at the prompt to the user. The client should
 next prompt the user to select one of the commands.
 
 ### RDM: Read Messages
-RDM timestamp
+`RDM timestamp`
+
 The timestamp, after which the messages to be read, should be included as an argument. The client
 should send the command (RDM) and a timestamp to the server. The server should check if there are
 any new messages (i.e., the timestamps of the messages that are larger/later than the timestamp
@@ -194,7 +201,8 @@ client and displayed at the prompt to the user. The client should next prompt th
 the available commands.
 
 ### ATU: Download Active Users
-ATU
+`ATU`
+
 There should be no arguments for this command. The server should check if there are any other active
 users apart from the client that sends the ATU command. If so, the server should send the usernames,
 timestamp since the users are active, (and their IP addresses and Port Numbers, CSE Students only)
@@ -205,7 +213,8 @@ user” should be sent to the client and displayed at the prompt to the user. Th
 prompt the user to select one of the available commands.
 
 ### OUT: Log out
-OUT
+`OUT`
+
 There should be no arguments for this command. The client should close the TCP connection, (UDP
 client server, CSE Students only) and exit with a goodbye message displayed at the terminal to the
 user. The server should update its state information about currently logged on users and the active
@@ -224,7 +233,8 @@ Presenter. Note that a client can behave in either Presenter or Audience state.
 To implement this functionality your client should support the following command.
 
 ### UPD: Upload file
-UPD username filename
+`UPD username filename`
+
 The Audience user and the name of the file should be included as arguments. You may assume that
 the file included in the argument will be available in the current working directory of the client with
 the correct access permissions set (read). You should not assume that the file will be in a particular
@@ -259,12 +269,11 @@ is possible for multiple TCP connections to use the same server-side port number
 unsuccessful authentication attempts before a user should be blocked for 10 seconds. It should
 be an integer between 1 and 5.
 The server should be executed before any of the clients. It should be initiated as follows:
-If you use Java:
-java Server server_port number_of_consecutive_failed_attempts
-If you use C:
-./server server_port number_of_consecutive_failed_attempts
+
 If you use Python:
-python server.py server_port number_of_consecutive_failed_attempts
+`python server.py server_port number_of_consecutive_failed_attempts`
+e.g. `python server.py 12000 3`
+
 The client should accept the following three arguments:
 • server_IP: this is the IP address of the machine on which the server is running.
 • server_port: this is the port number being used by the server. This argument should be the
@@ -274,20 +283,11 @@ traffic from the other clients.
 Note that, you do not have to specify the TCP port to be used by the client. You should allow the OS
 to pick a random available port. Similarly, you should allow the OS to pick a random available UDP
 source port for the UDP client. Each client should be initiated in a separate terminal as follows:
-For non-CSE Students:
-If you use Java:
-java Client server_IP server_port
-If you use C:
-./client server_IP server_port
+
 If you use Python:
-python client.py server_IP server_port
-For CSE Students:
-If you use Java:
-java Client server_IP server_port client_udp_server_port
-If you use C:
-./client server_IP server_port client_udp_server_port
-If you use Python:
-python client.py server_IP server_port client_udp_server_port
+`python client.py server_IP server_port client_udp_server_port`
+e.g. `python client.py 127.0.0.1 12000 6000`
+
 Note: 1) The additional argument of client_udp_server_port for CSE Students for the P2P UDP
 communication described in Section 3.4. In UDP P2P communication, one client program (i.e.,
 Audience) acts as UDP server and the other client program (i.e., Presenter) acts as UDP client. 2)
