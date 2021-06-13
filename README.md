@@ -88,20 +88,27 @@ attempts, the user is blocked for a duration of 10 seconds (number is an integer
 argument supplied to the server and the valid value of number should be between 1 and 5) and cannot
 login during this 10 second duration (even from another IP address). If an invalid number value (e.g.,
 a floating-point value, 0 or 6) is supplied to the server, the server prints out a message such as 
+
 `“Invalid number of allowed failed consecutive attempt: number. The valid value of argument number is an
 integer between 1 and 5”.`
+
 For non-CSE Students: After a user logs in successfully, the server should record a timestamp of
 the user logging in event and the username in the active user log file (userlog.txt, you should make
 sure that write permissions are enabled for userlog.txt). Active users are numbered starting at 1:
+
 `Active user sequence number; timestamp; username`
 `1; 19 Feb 2021 21:30:04; yoda`
+
 For CSE Students: After a user logs in successfully, the client should next send the UDP port number
 that it is listening to the server. The server should record a timestamp of the user logging in event, the
 username, the IP address (how?) and port number that the client listens to in the active user log file
 (userlog.txt):
+
 `Active user sequence number; timestamp; username; client IP address;`
 `client UDP server port number`
+
 `1; 19 Feb 2021 21:30:04; yoda; 129.64.1.11; 6666`
+
 For simplicity, a user will log in once in any given time, e.g., multiple logins concurrently are not
 allowed, and we won’t test this case.
 
