@@ -332,9 +332,8 @@ are available on the course webpage.
 ### Running the program
 1. To run the server, execute the following command;
 2. To run the client, execute the following command;
-3. To login, you must enter the username and password of an account found in the credentials.txt file.
-  
-  e.g.  `Enter username: Hans`
-        `Enter password: Jedi*knight`
+3. To login, you must enter the username and password of an account found in the credentials.txt file.\
+  e.g.  `Enter username: Hans`\
+        `Enter password: Jedi*knight`\
 4. Once logged in, run any of the commands seen under section 2.3
  
